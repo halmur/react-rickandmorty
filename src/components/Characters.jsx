@@ -1,61 +1,65 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Characters = () => {
   // state
   const [characters, setCharacters] = useState(null)
+  const [name, setName] = useState(null)
+  const [gender, setGender] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   // effect
-
-  // other logic
-  
-  const findCharacters = _ => {
-    console.log('do fetch');
-    let query = ''
-    let charName = document.querySelector('#char-name input')
-    console.log('charName.value 2', charName.value);
-
-    const charGender = document.querySelectorAll('#char-gender input')
-    // charGender.forEach(gen => console.log('gen.checked', gen.checked))
-
-    const charSpecies = document.querySelectorAll('#char-species select option')
-    // charSpecies.forEach(s => console.log('s.selected', s.selected))
-
-    const charStatus = document.querySelectorAll('#char-status select option')
-    // charStatus.forEach(status => console.log('status.selected', status.selected))
-
+  useEffect(_ => {
     const find = async () => {
-      const charData = await axios.get('https://rickandmortyapi.com/api/character', {
+      let errMsg = null
+      
+      const apiResponse = await axios.get('https://rickandmortyapi.com/api/character', {
         params: {
-          
+          name,
+          gender,
+          species: 'robot',
+          status: 'alive'
         }
+      }).catch(error => {
+        console.log('ERRROR.request', error.request);
+        console.log('ERRROR.RESPONSE', error.response);
+        console.log('ERRROR.RESPONSE.data.error', error.response.data.error);
+        errMsg = error.response.data.error
+        setIsError(true)
       })
-      // console.log(charData.data);
-      setCharacters(charData.data.results)
+
+      errMsg ? setIsError(errMsg) : setCharacters(apiResponse.data.results)
     }
     find()
+  }, [name, gender])
+  
+  // other logic
+  const findCharacters = _ => {console.log('empty')}
+  
+
+  function fBn(e) {
+    setName(e.target.value)
   }
 
-  // let charName = 'Rick Sanchez'
-  // console.log('charName.value 1', charName);
-  // // console.log(characters);
-  // characters && characters.forEach(element => {
-  //   // console.log('element', element.name);
-  //   console.log('element', element.name === charName);
-  // });
-
-
+  function fBg(e) {
+    console.log('filtering genders');
+    setGender(e.target.value)
+  }
+  
+  console.log('characters', characters);
+  console.log('render characters.jsx');
   return (
     <section id="characters">
-      <h4>Search for a Rick & Morty character</h4>
+      <h4>{characters ? '{characters} matches your search' : `${isError}, please search again!`}</h4>
 
       <div id='char-name'>
         <label htmlFor="name">name (optional)</label>
-        <input id="name" type="text" />
+        <input id="name" type="text" onChange={fBn}/>
       </div>
 
-      <div id='char-gender'>
+      <div id='char-gender' onChange={fBg}>
         <span>gender</span>
+        <label><input type="radio" name="gender" value="" />all</label>
         <label><input type="radio" name="gender" value="male" />male</label>
         <label><input type="radio" name="gender" value="female" />female</label>
         <label><input type="radio" name="gender" value="genderless" />genderless</label>
@@ -90,3 +94,33 @@ const Characters = () => {
   )
 }
 export default Characters
+
+
+
+
+
+
+/* might need
+  let query = ''
+  let charName = document.querySelector('#char-name input')
+  console.log('charName', charName);
+
+  const charGender = document.querySelectorAll('#char-gender input')
+  // charGender.forEach(gen => console.log('gen.checked', gen.checked))
+
+  const charSpecies = document.querySelectorAll('#char-species select option')
+  // charSpecies.forEach(s => console.log('s.selected', s.selected))
+
+  const charStatus = document.querySelectorAll('#char-status select option')
+  // charStatus.forEach(status => console.log('status.selected', status.selected))
+*/
+
+/* test
+  console.log(characters);
+
+  let charName = 'Rick Sanchez'
+
+  characters && characters.forEach(element => {
+    console.log('element', element.name === charName);
+  });
+*/

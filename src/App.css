@@ -10,15 +10,19 @@
   }
 
   .App-main {
-    padding: 50px 0 30px;
-    background-color: blueviolet;
+    /* padding: 50px 0 30px; */
+    background-color: whitesmoke;
   }
     #characters {
+      background-color: blueviolet;
+      border-end-end-radius: 100%;
+
       display: grid;
       justify-content: center;
       row-gap: 20px;
     }
       #characters h4 {
+        min-width: 380px;
         margin: 0;
         font-size: 1.4rem;
         color: white;
