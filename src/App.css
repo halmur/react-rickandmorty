@@ -25,8 +25,12 @@
         min-width: 380px;
         margin: 0;
         font-size: 1.4rem;
+        text-transform: lowercase;
         color: white;
       }
+        #characters h4::first-letter {
+          text-transform: capitalize;
+        }
 
       #char-name {
         /* background-color: antiquewhite; */

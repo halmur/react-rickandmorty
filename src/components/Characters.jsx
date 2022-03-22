@@ -2,12 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Characters = () => {
+  console.log('-----> > > CHARACTERS.jsx');
   // state
   const [characters, setCharacters] = useState(null)
   const [name, setName] = useState(null)
   const [gender, setGender] = useState(null)
   const [isError, setIsError] = useState(false)
-
+  
   // effect
   useEffect(_ => {
     const find = async () => {
@@ -21,36 +22,40 @@ const Characters = () => {
           status: 'alive'
         }
       }).catch(error => {
-        console.log('ERRROR.request', error.request);
-        console.log('ERRROR.RESPONSE', error.response);
         console.log('ERRROR.RESPONSE.data.error', error.response.data.error);
         errMsg = error.response.data.error
-        setIsError(true)
-      })
 
-      errMsg ? setIsError(errMsg) : setCharacters(apiResponse.data.results)
+        if (isError) {
+          return
+        } else (
+          setIsError(errMsg)
+        )
+      })
+      
+      apiResponse && setCharacters(apiResponse.data.info.count)
+      apiResponse && isError && setIsError(false)
     }
     find()
   }, [name, gender])
   
+  
   // other logic
   const findCharacters = _ => {console.log('empty')}
   
-
   function fBn(e) {
     setName(e.target.value)
   }
 
   function fBg(e) {
-    console.log('filtering genders');
     setGender(e.target.value)
   }
   
-  console.log('characters', characters);
+  console.log('characters:', characters);
   console.log('render characters.jsx');
   return (
     <section id="characters">
-      <h4>{characters ? '{characters} matches your search' : `${isError}, please search again!`}</h4>
+      {/* <h4>{!isError ? `${characters} matches your search` : `${isError}, please search again!`}</h4> */}
+      <h4>{isError ? `Ops, ${isError}!` : `${characters} characters matches your search`}</h4>
 
       <div id='char-name'>
         <label htmlFor="name">name (optional)</label>
