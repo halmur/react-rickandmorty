@@ -10,6 +10,7 @@ function App() {
 
       <main className="App-main">
         <Characters />
+        <span id='char-info'>do something with the filtered character data</span>
       </main>
     </div>
   );
