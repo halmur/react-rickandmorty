@@ -7,10 +7,12 @@ const Characters = () => {
   const [characters, setCharacters] = useState(null)
   const [name, setName] = useState(null)
   const [gender, setGender] = useState(null)
+  const [species, setSpecies] = useState(null)
+  const [status, setStatus] = useState(null)
   const [isError, setIsError] = useState(false)
   
   // effect
-  useEffect(_ => {
+  useEffect( _ => {
     const find = async () => {
       let errMsg = null
       
@@ -18,11 +20,10 @@ const Characters = () => {
         params: {
           name,
           gender,
-          species: 'robot',
-          status: 'alive'
+          species,
+          status
         }
       }).catch(error => {
-        console.log('ERRROR.RESPONSE.data.error', error.response.data.error);
         errMsg = error.response.data.error
 
         if (isError) {
@@ -32,37 +33,24 @@ const Characters = () => {
         )
       })
       
+      console.log(apiResponse);
       apiResponse && setCharacters(apiResponse.data.info.count)
       apiResponse && isError && setIsError(false)
     }
     find()
-  }, [name, gender])
-  
-  
-  // other logic
-  const findCharacters = _ => {console.log('empty')}
-  
-  function fBn(e) {
-    setName(e.target.value)
-  }
+  }, [name, gender, species, status])
 
-  function fBg(e) {
-    setGender(e.target.value)
-  }
-  
-  console.log('characters:', characters);
-  console.log('render characters.jsx');
+  // jsx
   return (
     <section id="characters">
-      {/* <h4>{!isError ? `${characters} matches your search` : `${isError}, please search again!`}</h4> */}
       <h4>{isError ? `Ops, ${isError}!` : `${characters} characters matches your search`}</h4>
 
       <div id='char-name'>
         <label htmlFor="name">name (optional)</label>
-        <input id="name" type="text" onChange={fBn}/>
+        <input id="name" type="text" onChange={ e => setName(e.target.value)}/>
       </div>
 
-      <div id='char-gender' onChange={fBg}>
+      <div id='char-gender' onChange={e => setGender(e.target.value)}>
         <span>gender</span>
         <label><input type="radio" name="gender" value="" />all</label>
         <label><input type="radio" name="gender" value="male" />male</label>
@@ -73,12 +61,12 @@ const Characters = () => {
 
       <div id='char-species'>
         <label htmlFor='species'>species</label>
-        <select id='species'>
+        <select id='species' onChange={e => setSpecies(e.target.value)}>
+          <option value="">all</option>
           <option value="human">human</option>
           <option value="alien">alien</option>
           <option value="humanoid">humanoid</option>
-          <option value="mythological">mythological</option>
-          <option value="creature">creature</option>
+          <option value="mythological creature">mythological creature</option>
           <option value="animal">animal</option>
           <option value="robot">robot</option>
         </select>
@@ -86,46 +74,14 @@ const Characters = () => {
 
       <div id='char-status'>
         <label htmlFor='status'>status</label>
-        <select id='status'>
-          <option value="all">all</option>
+        <select id='status' onChange={e => setStatus(e.target.value)}>
+          <option value="">all</option>
           <option value="alive">alive</option>
           <option value="unknown">unknown</option>
           <option value="dead">dead</option>
         </select>
       </div>
-
-      <button id='find-char' onClick={findCharacters}>find</button>
     </section>
   )
 }
 export default Characters
-
-
-
-
-
-
-/* might need
-  let query = ''
-  let charName = document.querySelector('#char-name input')
-  console.log('charName', charName);
-
-  const charGender = document.querySelectorAll('#char-gender input')
-  // charGender.forEach(gen => console.log('gen.checked', gen.checked))
-
-  const charSpecies = document.querySelectorAll('#char-species select option')
-  // charSpecies.forEach(s => console.log('s.selected', s.selected))
-
-  const charStatus = document.querySelectorAll('#char-status select option')
-  // charStatus.forEach(status => console.log('status.selected', status.selected))
-*/
-
-/* test
-  console.log(characters);
-
-  let charName = 'Rick Sanchez'
-
-  characters && characters.forEach(element => {
-    console.log('element', element.name === charName);
-  });
-*/
